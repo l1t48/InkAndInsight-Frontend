@@ -1,8 +1,16 @@
 import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { ApiService } from '../services/api.service';
+import { AuthStateService } from '../services/auth-state.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-auth',
+  standalone: true,
+  imports: [FormsModule, CommonModule],
   template: `
+  <div class="d-flex justify-content-center align-items-center vh-100 bg-body text-body">
     <div class="container-fluid mt-5">
       <div class="row justify-content-center">
         <div class="col-md-7 p-4 border rounded shadow-sm shadow-lg">
@@ -10,6 +18,7 @@ import { Component } from '@angular/core';
           <ul class="nav nav-pills nav-fill mb-4">
             <li class="nav-item w-25">
               <button
+                id="login-tab-button"
                 class="nav-link active fw-semibold px-3 py-2"
                 data-bs-toggle="tab"
                 data-bs-target="#login"
@@ -33,37 +42,120 @@ import { Component } from '@angular/core';
 
           <div class="tab-content mt-5">
 
+            <!-- LOGIN -->
             <div class="tab-pane fade show active" id="login">
               <h4 class="mb-3 text-center fs-2">Login</h4>
               <br/>
               <div class="mb-3">
-                <input type="email" class="form-control form-control-lg" placeholder="Email">
+                <input type="email" id="emailLogin" class="form-control form-control-lg" placeholder="Email" [(ngModel)]="loginEmail" aria-label="Email">
               </div>
               <div class="mb-3">
-                <input type="password" class="form-control form-control-lg" placeholder="Password">
+                <input type="password" id="passwordLogin" class="form-control form-control-lg" placeholder="Password" [(ngModel)]="loginPassword" aria-label="Password">
               </div>
-              <button class="btn btn-primary btn-lg w-100 mt-3" type="button">Login</button>
+
+              <!-- Message above button -->
+              <h1 *ngIf="loginMessage" class="text-center mb-3 fs-5" [class.text-success]="loginSuccess" [class.text-danger]="!loginSuccess">
+                {{ loginMessage }}
+              </h1>
+
+              <button class="btn btn-primary btn-lg w-100 mt-3" type="button" (click)="login()">Login</button>
             </div>
 
+            <!-- REGISTER -->
             <div class="tab-pane fade" id="register">
               <h4 class="mb-3 text-center fs-2">Register</h4>
               <br/>
               <div class="mb-3">
-                <input type="text" class="form-control form-control-lg" placeholder="Name">
+                <input type="text" id="usernameRegister" class="form-control form-control-lg" placeholder="Name" [(ngModel)]="registerName" aria-label="Name">
               </div>
               <div class="mb-3">
-                <input type="email" class="form-control form-control-lg" placeholder="Email">
+                <input type="email" id="emailRegister" class="form-control form-control-lg" placeholder="Email" [(ngModel)]="registerEmail" aria-label="Email">
               </div>
               <div class="mb-3">
-                <input type="password" class="form-control form-control-lg" placeholder="Password">
+                <input type="password" id="passwordRegister" class="form-control form-control-lg" placeholder="Password" [(ngModel)]="registerPassword" aria-label="Password">
               </div>
-              <button class="btn btn-primary btn-lg w-100 mt-3" type="button">Register</button>
+
+              <!-- Message above button -->
+              <h1 *ngIf="registerMessage" class="text-center mb-3 fs-5" [class.text-success]="registerSuccess" [class.text-danger]="!registerSuccess">
+                {{ registerMessage }}
+              </h1>
+
+              <button class="btn btn-primary btn-lg w-100 mt-3" type="button" (click)="register()">Register</button>
             </div>
 
           </div>
         </div>
       </div>
     </div>
+    </div>
   `
 })
-export class AuthPage {}
+
+export class AuthPage {
+  loginEmail = '';
+  loginPassword = '';
+  loginMessage = '';
+  loginSuccess = false;
+
+  registerName = '';
+  registerEmail = '';
+  registerPassword = '';
+  registerMessage = '';
+  registerSuccess = false;
+
+  constructor(private api: ApiService, private authState: AuthStateService, private router: Router) { }
+
+  login() {
+    this.loginMessage = '';
+    this.loginSuccess = false;
+
+    this.api.login({ email: this.loginEmail, password: this.loginPassword }).subscribe({
+      next: res => {
+        // Success message from login
+        this.loginMessage = res?.message;
+        this.loginSuccess = true;
+
+        // Fetch user info after login
+        this.api.getAuthMe().subscribe({
+          next: user => {
+            this.authState.setUser(user);
+            this.router.navigate(['/books']);
+          },
+          error: () => console.warn('Could not fetch user info.')
+        });
+      },
+      error: err => {
+        this.loginMessage = err.error.message;
+        this.loginSuccess = false;
+      }
+    });
+  }
+
+  register() {
+    this.registerMessage = '';
+    this.registerSuccess = false;
+
+    // Remove withCredentials since register does not set cookies
+    this.api.register({ username: this.registerName, email: this.registerEmail, password: this.registerPassword }).subscribe({
+      next: res => {
+        // If backend returns plain text, just use it directly
+        this.registerMessage = res.message;
+        this.registerSuccess = true;
+
+        // Wait 1.5 seconds before switching to login tab
+        setTimeout(() => {
+          const loginTabButton = document.querySelector<HTMLButtonElement>('#login-tab-button');
+          if (loginTabButton) {
+            loginTabButton.click(); // triggers the tab change
+          }
+        }, 1500); // 1500ms = 1.5 seconds
+
+      },
+      error: err => {
+        this.registerMessage = err.error.message;
+        this.registerSuccess = false;
+      }
+    });
+  }
+
+}

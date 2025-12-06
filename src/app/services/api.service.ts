@@ -8,7 +8,7 @@ import { environment } from '../environment/environment';
     providedIn: 'root'
 })
 export class ApiService {
- private baseUrl = import.meta.env.VITE_apiBaseUrlLocal;
+    private baseUrl = import.meta.env.VITE_apiBaseUrlLocal;
 
     constructor(private http: HttpClient) { }
 
@@ -17,11 +17,21 @@ export class ApiService {
     // ====================
 
     register(data: any): Observable<any> {
+        // Remove withCredentials for registration to avoid parsing errors, and it is not needed anyway here because no cred is needed the user need to login
         return this.http.post(`${this.baseUrl}/auth/register`, data);
     }
 
+
     login(data: any): Observable<any> {
-        return this.http.post(`${this.baseUrl}/auth/login`, data);
+        return this.http.post(`${this.baseUrl}/auth/login`, data, { withCredentials: true });
+    }
+
+    getAuthMe(): Observable<any> {
+        return this.http.get(`${this.baseUrl}/auth/user-data`, { withCredentials: true });
+    }
+
+    logout(data: any): Observable<any> {
+        return this.http.post(`${this.baseUrl}/auth/logout`, data);
     }
 
     // ====================
@@ -29,23 +39,23 @@ export class ApiService {
     // ====================
 
     getBooks(): Observable<any> {
-        return this.http.get(`${this.baseUrl}/books`);
+        return this.http.get(`${this.baseUrl}/books`, { withCredentials: true });
     }
 
     getBookById(id: string | number): Observable<any> {
-        return this.http.get(`${this.baseUrl}/books/${id}`);
+        return this.http.get(`${this.baseUrl}/books/${id}`, { withCredentials: true });
     }
 
     createBook(data: any): Observable<any> {
-        return this.http.post(`${this.baseUrl}/books`, data);
+        return this.http.post(`${this.baseUrl}/books`, data, { withCredentials: true });
     }
 
     updateBook(id: string | number, data: any): Observable<any> {
-        return this.http.put(`${this.baseUrl}/books/${id}`, data);
+        return this.http.put(`${this.baseUrl}/books/${id}`, data, { withCredentials: true });
     }
 
     deleteBook(id: string | number): Observable<any> {
-        return this.http.delete(`${this.baseUrl}/books/${id}`);
+        return this.http.delete(`${this.baseUrl}/books/${id}`, { withCredentials: true });
     }
 
     // ====================
@@ -53,31 +63,33 @@ export class ApiService {
     // ====================
 
     getQuotes(): Observable<any> {
-        return this.http.get(`${this.baseUrl}/quotes`);
+        return this.http.get(`${this.baseUrl}/quotes`, { withCredentials: true });
     }
 
     getQuoteById(id: string | number): Observable<any> {
-        return this.http.get(`${this.baseUrl}/quotes/${id}`);
+        return this.http.get(`${this.baseUrl}/quotes/${id}`, { withCredentials: true });
     }
 
     createQuote(data: any): Observable<any> {
-        return this.http.post(`${this.baseUrl}/quotes`, data);
+        return this.http.post(`${this.baseUrl}/quotes`, data, { withCredentials: true });
     }
 
     updateQuote(id: string | number, data: any): Observable<any> {
-        return this.http.put(`${this.baseUrl}/quotes/${id}`, data);
+        return this.http.put(`${this.baseUrl}/quotes/${id}`, data, { withCredentials: true });
     }
 
     deleteQuote(id: string | number): Observable<any> {
-        return this.http.delete(`${this.baseUrl}/quotes/${id}`);
+        return this.http.delete(`${this.baseUrl}/quotes/${id}`, { withCredentials: true });
     }
 
-    // Test API
+    // --------------------
+    // TEST
+    // --------------------
     getTest(): Observable<any> {
-        return this.http.get(`${this.baseUrl}/test`);
+        return this.http.get(`${this.baseUrl}/test`, { withCredentials: true });
     }
 
     postTest(data: any): Observable<any> {
-        return this.http.post(`${this.baseUrl}/test`, data);
+        return this.http.post(`${this.baseUrl}/test`, data, { withCredentials: true });
     }
 }
