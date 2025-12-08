@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "cross-env VITE_apiBaseUrlProduction=$VITE_apiBaseUrlProduction VITE_BaseUrlProductionWitoutAPI=$VITE_BaseUrlProductionWitoutAPI ng build",
+    "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "serve:ssr:test-frontend": "node dist/test-frontend/server/server.mjs"

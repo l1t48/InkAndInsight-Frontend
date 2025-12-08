@@ -2,19 +2,16 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '../environment/environment';
+import { environment } from '../environment/environment.prod';
 
 @Injectable({
     providedIn: 'root'
 })
 export class ApiService {
-    public baseUrl = import.meta.env.VITE_apiBaseUrlProduction
-        ? import.meta.env.VITE_apiBaseUrlProduction
-        : import.meta.env.VITE_apiBaseUrlLocal;
-
-    public baseUrlLocalWitoutAPI = import.meta.env.VITE_BaseUrlProductionWitoutAPI
-        ? import.meta.env.VITE_BaseUrlProductionWitoutAPI
-        : import.meta.env.VITE_BaseUrlLocalWitoutAPI;
+    // public baseUrl = import.meta.env.VITE_apiBaseUrlLocal;
+    // public baseUrlLocalWitoutAPI = import.meta.env.VITE_BaseUrlLocalWitoutAPI;
+    public baseUrl = environment.apiBaseUrl;
+    public baseUrlLocalWitoutAPI = environment.baseUrlWithoutAPI;
 
     constructor(private http: HttpClient) { }
 

@@ -1,5 +1,5 @@
 // src/environments/environment.ts
 export const environment = {
   production: false,
-  apiBaseUrl: 'http://localhost:5069/api'
+  apiBaseUrl: 'https://test-backend-u24f.onrender.com/api'
 };
