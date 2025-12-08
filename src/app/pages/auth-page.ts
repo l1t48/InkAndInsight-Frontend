@@ -104,7 +104,7 @@ export class AuthPage {
   registerMessage = '';
   registerSuccess = false;
 
-  constructor(private api: ApiService, private authState: AuthStateService, private router: Router, private signalR: SignalRService ) { }
+  constructor(private api: ApiService, private authState: AuthStateService, private router: Router, private signalR: SignalRService) { }
 
   login() {
     this.loginMessage = '';
@@ -127,20 +127,29 @@ export class AuthPage {
         });
       },
       error: err => {
-        this.loginMessage = err.error.message;
         this.loginSuccess = false;
+        if (err.error?.errors) {
+          // get first error from errors object
+          const firstFieldErrors = Object.values(err.error.errors)[0];
+          this.loginMessage = Array.isArray(firstFieldErrors) ? firstFieldErrors[0] : firstFieldErrors;
+        } else if (err.error?.message) {
+          this.loginMessage = err.error.message;
+        } else if (typeof err.error === 'string') {
+          this.loginMessage = err.error;
+        } else {
+          this.loginMessage = 'Login failed.';
+        }
       }
+
     });
   }
 
   register() {
     this.registerMessage = '';
     this.registerSuccess = false;
-
     // Remove withCredentials since register does not set cookies
     this.api.register({ username: this.registerName, email: this.registerEmail, password: this.registerPassword }).subscribe({
       next: res => {
-        // If backend returns plain text, just use it directly
         this.registerMessage = res.message;
         this.registerSuccess = true;
 
@@ -154,9 +163,20 @@ export class AuthPage {
 
       },
       error: err => {
-        this.registerMessage = err.error.message;
         this.registerSuccess = false;
+        if (err.error?.errors) {
+          // get the first error from the errors object
+          const firstFieldErrors = Object.values(err.error.errors)[0]; // first field's errors array
+          this.registerMessage = Array.isArray(firstFieldErrors) ? firstFieldErrors[0] : firstFieldErrors;
+        } else if (err.error?.message) {
+          this.registerMessage = err.error.message;
+        } else if (typeof err.error === 'string') {
+          this.registerMessage = err.error;
+        } else {
+          this.registerMessage = 'Registration failed.';
+        }
       }
+
     });
   }
 

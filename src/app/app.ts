@@ -9,7 +9,7 @@ import { SignalRService } from './services/signalr.service';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, ThemeSwitcher, HeaderComponent], // standalone components only
+  imports: [RouterOutlet, ThemeSwitcher, HeaderComponent],
   template: `
     <app-header></app-header>
     <div class="bg-body text-body">

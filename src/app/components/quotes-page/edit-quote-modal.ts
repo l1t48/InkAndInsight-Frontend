@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { ApiService } from '../../services/api.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { SignalRService } from '../../services/signalr.service';
+import { ModalHelper } from '../../helper/modal-helper';
 
 declare const bootstrap: any;
 
@@ -17,7 +18,7 @@ declare const bootstrap: any;
         <form class="modal-content" (submit)="onSave($event)" novalidate>
           <div class="modal-header">
             <h5 class="modal-title" id="editQuoteModalLabel">Edit Quote</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" [disabled]="saving"></button>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" [disabled]="saving" (click)="closeModal()"></button>
           </div>
 
           <div class="modal-body">
@@ -36,7 +37,7 @@ declare const bootstrap: any;
           </div>
 
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" [disabled]="saving">Close <i class="fa-solid fa-xmark"></i></button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" [disabled]="saving" (click)="closeModal()">Close <i class="fa-solid fa-xmark"></i></button>
             <button type="submit" class="btn btn-primary" [disabled]="saving">
               <span *ngIf="!saving">Save <i class="fa-regular fa-floppy-disk"></i></span>
               <span *ngIf="saving" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
@@ -53,14 +54,14 @@ export class EditQuoteModalComponent {
   errorMessage = '';
   successMessage = '';
 
-  constructor(private api: ApiService, private signalR: SignalRService) {}
-
+  constructor(private api: ApiService, private signalR: SignalRService) { }
+  
   showModal() {
-    const el = document.getElementById('editQuoteModal');
-    if (el) {
-      const modal = bootstrap.Modal.getInstance(el) ?? new bootstrap.Modal(el);
-      modal.show();
-    }
+    ModalHelper.showModal('editQuoteModal');
+  }
+
+  closeModal() {
+    ModalHelper.hideModal('editQuoteModal');
   }
 
   onSave(e: Event) {
@@ -84,19 +85,24 @@ export class EditQuoteModalComponent {
         this.signalR.refreshQuotes();
         this.saving = false;
         setTimeout(() => {
-          const el = document.getElementById('editQuoteModal');
-          if (el) {
-            const modal = bootstrap.Modal.getInstance(el);
-            modal?.hide();
-          }
+          this.closeModal();
         }, 500);
       },
       error: (err: HttpErrorResponse) => {
         this.saving = false;
-        if (err.error?.message) this.errorMessage = err.error.message;
-        else if (typeof err.error === 'string') this.errorMessage = err.error;
-        else this.errorMessage = 'Failed to update quote.';
+
+        if (err.error?.errors) {
+          const firstFieldErrors = Object.values(err.error.errors)[0];
+          this.errorMessage = Array.isArray(firstFieldErrors) ? firstFieldErrors[0] : firstFieldErrors;
+        } else if (err.error?.message) {
+          this.errorMessage = err.error.message;
+        } else if (typeof err.error === 'string') {
+          this.errorMessage = err.error;
+        } else {
+          this.errorMessage = 'Failed to update quote.';
+        }
       }
+
     });
   }
 }

@@ -45,7 +45,7 @@ export class SignalRService {
     });
 
     this.hubConnection.on('BookDeleted', (data) => {
-      const id = data.id; // backend sends { Id: ... }
+      const id = data.id;
       const filtered = this.booksSubject.value.filter(b => b.id !== id);
       this.booksSubject.next(filtered);
     });

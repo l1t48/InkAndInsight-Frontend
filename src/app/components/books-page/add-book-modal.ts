@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from '../../services/api.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import { ModalHelper } from '../../helper/modal-helper';
 
 declare const bootstrap: any; // used to programmatically hide modal (Bootstrap bundle must be loaded)
 
@@ -17,7 +18,7 @@ declare const bootstrap: any; // used to programmatically hide modal (Bootstrap 
         <form class="modal-content" (submit)="onSave($event)" novalidate>
           <div class="modal-header">
             <h5 class="modal-title" id="createBookModalLabel">Create a new book</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="closeModal()"></button>
           </div>
 
           <div class="modal-body">
@@ -48,7 +49,7 @@ declare const bootstrap: any; // used to programmatically hide modal (Bootstrap 
           </div>
 
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" [disabled]="saving">Close <i class="fa-solid fa-xmark"></i></button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" [disabled]="saving" (click)="closeModal()">Close <i class="fa-solid fa-xmark"></i></button>
 
             <!-- We do NOT use data-bs-dismiss here so we can only close after success programmatically -->
             <button type="submit" class="btn btn-primary" [disabled]="saving">
@@ -72,7 +73,15 @@ export class CreateBookModalComponent {
 
   @Output() created = new EventEmitter<{ id?: number; title: string; author: string; description?: string }>();
 
-  constructor(private api: ApiService) {}
+  constructor(private api: ApiService) { }
+
+  showModal() {
+    ModalHelper.showModal('createBookModal');
+  }
+
+  closeModal() {
+    ModalHelper.hideModal('createBookModal');
+  }
 
   onSave(e: Event) {
     e.preventDefault();
@@ -109,18 +118,17 @@ export class CreateBookModalComponent {
 
         // programmatically hide the modal after a short delay so user sees the success message
         setTimeout(() => {
-          const el = document.getElementById('createBookModal');
-          if (el) {
-            // get existing instance or create one
-            const inst = bootstrap.Modal.getInstance(el) ?? new bootstrap.Modal(el);
-            inst.hide();
-          }
+          this.closeModal();
         }, 600);
       },
       error: (err: HttpErrorResponse) => {
         this.saving = false;
-        // Prefer backend message if present
-        if (err.error?.message) {
+
+        if (err.error?.errors) {
+          // Get first validation error from the errors object
+          const firstFieldErrors = Object.values(err.error.errors)[0];
+          this.errorMessage = Array.isArray(firstFieldErrors) ? firstFieldErrors[0] : firstFieldErrors;
+        } else if (err.error?.message) {
           this.errorMessage = err.error.message;
         } else if (typeof err.error === 'string') {
           this.errorMessage = err.error;

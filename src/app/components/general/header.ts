@@ -21,7 +21,7 @@ import { filter } from 'rxjs'
 
           <div class="collapse navbar-collapse mt-3 mt-lg-0" id="navbarSupportedContent">
             <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-              <li class="nav-item">
+              <li class="nav-item d-flex justify-content-center">
                 <button class="nav-link"
                   [class.active]="active === '/books'"
                   [class.text-primary]="active === '/books'"
@@ -29,7 +29,7 @@ import { filter } from 'rxjs'
                   Books <i class="fa-solid fa-book-open"></i>
                 </button>
               </li>
-              <li class="nav-item">
+              <li class="nav-item d-flex justify-content-center">
                 <button class="nav-link"
                   [class.active]="active === '/quotes'"
                   [class.text-primary]="active === '/quotes'"
@@ -37,7 +37,7 @@ import { filter } from 'rxjs'
                   Quotes <i class="fa-brands fa-pied-piper-hat"></i>
                 </button>
               </li>
-              <li class="nav-item">
+              <li class="nav-item d-flex justify-content-center">
                 <button class="nav-link" (click)="logout()">
                   Logout <i class="fa-solid fa-arrow-right-from-bracket"></i> 
                 </button>
@@ -50,7 +50,7 @@ import { filter } from 'rxjs'
   `
 })
 export class HeaderComponent {
-  active: string = ''; // default active
+  active: string = '';
 
   constructor(
     public auth: AuthStateService,
@@ -59,10 +59,8 @@ export class HeaderComponent {
   ) { }
 
   ngOnInit() {
-    // Set active based on current route
     this.active = this.router.url;
-
-    // Optional: update active if navigation happens elsewhere
+    // Update active if navigation happens elsewhere
     this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe((event: any) => {
@@ -82,10 +80,7 @@ export class HeaderComponent {
       error: () => console.warn('Backend logout failed')
     });
 
-    // Clear frontend auth state
     this.auth.clear();
-
-    // Redirect to login page
     this.router.navigate(['/auth']);
   }
 }

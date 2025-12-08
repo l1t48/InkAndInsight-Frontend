@@ -26,7 +26,7 @@ interface Book {
       </div>
 
       <!-- Table for larger screens -->
-      <div class="table-responsive d-none d-lg-block">
+      <div class="table-responsive d-none d-xl-block">
         <table class="table table-striped table-hover border mt-3">
           <thead>
             <tr>
@@ -55,7 +55,7 @@ interface Book {
       </div>
 
       <!-- Cards for smaller screens -->
-      <div class="d-block d-lg-none">
+      <div class="d-block d-xl-none">
         <div class="card mb-3" *ngFor="let book of books$ | async">
           <div class="card-body">
             <h5 class="card-title">Title: {{ book.title }}</h5>

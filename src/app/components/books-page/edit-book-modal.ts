@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from '../../services/api.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import { ModalHelper } from '../../helper/modal-helper';
 
 declare const bootstrap: any;
 
@@ -23,7 +24,7 @@ interface Book {
       <form class="modal-content" (submit)="onSave($event)" novalidate>
         <div class="modal-header">
           <h5 class="modal-title" id="editBookModalLabel">Edit Book</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="closeModal()"></button>
         </div>
 
         <div class="modal-body">
@@ -47,7 +48,7 @@ interface Book {
         </div>
 
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" [disabled]="saving">Close <i class="fa-solid fa-xmark"></i></button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" [disabled]="saving" (click)="closeModal()">Close <i class="fa-solid fa-xmark"></i></button>
           <button type="submit" class="btn btn-primary" [disabled]="saving">
             <span *ngIf="!saving">Save <i class="fa-regular fa-floppy-disk"></i></span>
             <span *ngIf="saving" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
@@ -65,14 +66,14 @@ export class EditBookModalComponent {
   errorMessage = '';
   successMessage = '';
 
-  constructor(private api: ApiService) {}
+  constructor(private api: ApiService) { }
 
   showModal() {
-    const el = document.getElementById('editBookModal');
-    if (el) {
-      const inst = bootstrap.Modal.getInstance(el) ?? new bootstrap.Modal(el);
-      inst.show();
-    }
+    ModalHelper.showModal('editBookModal');
+  }
+
+  closeModal() {
+    ModalHelper.hideModal('editBookModal');
   }
 
   onSave(e: Event) {
@@ -96,19 +97,25 @@ export class EditBookModalComponent {
         this.successMessage = 'Book updated successfully.';
         this.saving = false;
 
-        // Hide modal after short delay
         setTimeout(() => {
-          const el = document.getElementById('editBookModal');
-          if (el) {
-            const inst = bootstrap.Modal.getInstance(el) ?? new bootstrap.Modal(el);
-            inst.hide();
-          }
+          this.closeModal();
         }, 600);
       },
       error: (err: HttpErrorResponse) => {
         this.saving = false;
-        this.errorMessage = err.error?.message || 'Failed to update book.';
+
+        if (err.error?.errors) {
+          const firstFieldErrors = Object.values(err.error.errors)[0];
+          this.errorMessage = Array.isArray(firstFieldErrors) ? firstFieldErrors[0] : firstFieldErrors;
+        } else if (err.error?.message) {
+          this.errorMessage = err.error.message;
+        } else if (typeof err.error === 'string') {
+          this.errorMessage = err.error;
+        } else {
+          this.errorMessage = 'Failed to update book.';
+        }
       }
+
     });
   }
 }

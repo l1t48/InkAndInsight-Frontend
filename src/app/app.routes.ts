@@ -9,5 +9,4 @@ export const routes: Routes = [
   { path: 'auth', component: AuthPage },
   { path: 'books', component: BooksListPage,  canActivate: [AuthGuard] },
   { path: 'quotes', component: QuotesListPage,  canActivate: [AuthGuard] },
-  // other pages...
 ];

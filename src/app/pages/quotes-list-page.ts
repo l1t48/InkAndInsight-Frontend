@@ -18,7 +18,7 @@ import { Observable } from 'rxjs';
         </button>
       </div>
 
-      <div class="table-responsive d-none d-lg-block">
+      <div class="table-responsive d-none d-xl-block">
         <table class="table table-striped table-hover border mt-3">
           <thead>
             <tr>
@@ -41,7 +41,7 @@ import { Observable } from 'rxjs';
       </div>
 
       <!-- Small screens cards -->
-      <div class="d-block d-lg-none">
+      <div class="d-block d-xl-none">
         <div class="card mb-3" *ngFor="let quote of quotes$ | async">
           <div class="card-body">
             <p class="card-text">Quote: {{ quote.text }}</p>
@@ -93,7 +93,6 @@ export class QuotesListPage implements OnInit, AfterViewInit {
       this.signalR.api.deleteQuote(quoteId).subscribe({
         next: (res) => {
           this.signalR.refreshQuotes();
-          // Optional: keep the alert for user feedback
           alert(res.message);
         },
         error: (err) => alert(err)

@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { ApiService } from '../../services/api.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { SignalRService } from '../../services/signalr.service';
+import { ModalHelper } from '../../helper/modal-helper';
 
 declare const bootstrap: any; // bootstrap bundle must be loaded in index.html
 
@@ -18,7 +19,7 @@ declare const bootstrap: any; // bootstrap bundle must be loaded in index.html
         <form class="modal-content" (submit)="onSave($event)" novalidate>
           <div class="modal-header">
             <h5 class="modal-title" id="createQuoteModalLabel">Create a new quote</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" [disabled]="saving"></button>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" [disabled]="saving" (click)="closeModal()"></button>
           </div>
 
           <div class="modal-body">
@@ -37,7 +38,7 @@ declare const bootstrap: any; // bootstrap bundle must be loaded in index.html
           </div>
 
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" [disabled]="saving">Close <i class="fa-solid fa-xmark"></i></button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" [disabled]="saving" (click)="closeModal()">Close <i class="fa-solid fa-xmark"></i></button>
 
             <button type="submit" class="btn btn-primary" [disabled]="saving">
               <span *ngIf="!saving">Save <i class="fa-regular fa-floppy-disk"></i></span>
@@ -59,7 +60,15 @@ export class CreateQuoteModalComponent {
 
   @Output() created = new EventEmitter<any>();
 
-  constructor(private api: ApiService, private signalR: SignalRService) {}
+  constructor(private api: ApiService, private signalR: SignalRService) { }
+
+  showModal() {
+    ModalHelper.showModal('createQuoteModal');
+  }
+
+  closeModal() {
+    ModalHelper.hideModal('createQuoteModal');
+  }
 
   onSave(e: Event) {
     e.preventDefault();
@@ -88,19 +97,25 @@ export class CreateQuoteModalComponent {
         this.signalR.refreshQuotes();
         // hide modal after short delay so user sees the success message
         setTimeout(() => {
-          const el = document.getElementById('createQuoteModal');
-          if (el) {
-            const inst = bootstrap.Modal.getInstance(el) ?? new bootstrap.Modal(el);
-            inst.hide();
-          }
+          this.closeModal();
         }, 500);
       },
       error: (err: HttpErrorResponse) => {
         this.saving = false;
-        if (err.error?.message) this.errorMessage = err.error.message;
-        else if (typeof err.error === 'string') this.errorMessage = err.error;
-        else this.errorMessage = 'Failed to create quote.';
+
+        if (err.error?.errors) {
+          // Take the first validation error
+          const firstFieldErrors = Object.values(err.error.errors)[0];
+          this.errorMessage = Array.isArray(firstFieldErrors) ? firstFieldErrors[0] : firstFieldErrors;
+        } else if (err.error?.message) {
+          this.errorMessage = err.error.message;
+        } else if (typeof err.error === 'string') {
+          this.errorMessage = err.error;
+        } else {
+          this.errorMessage = 'Failed to create quote.';
+        }
       }
+
     });
   }
 }
