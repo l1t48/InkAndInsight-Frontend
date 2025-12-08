@@ -8,8 +8,13 @@ import { environment } from '../environment/environment';
     providedIn: 'root'
 })
 export class ApiService {
-    public baseUrl = import.meta.env.VITE_apiBaseUrlLocal;
-    public baseUrlLocalWitoutAPI = import.meta.env.VITE_BaseUrlLocalWitoutAPI;
+    public baseUrl = import.meta.env.VITE_apiBaseUrlProduction
+        ? import.meta.env.VITE_apiBaseUrlProduction
+        : import.meta.env.VITE_apiBaseUrlLocal;
+
+    public baseUrlLocalWitoutAPI = import.meta.env.VITE_BaseUrlProductionWitoutAPI
+        ? import.meta.env.VITE_BaseUrlProductionWitoutAPI
+        : import.meta.env.VITE_BaseUrlLocalWitoutAPI;
 
     constructor(private http: HttpClient) { }
 
