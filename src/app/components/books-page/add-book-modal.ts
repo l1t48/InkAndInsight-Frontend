@@ -5,6 +5,7 @@ import { ApiService } from '../../services/api.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ModalHelper } from '../../helper/modal-helper';
 import { SignalRService } from '../../services/signalr.service';
+import { AfterViewInit } from '@angular/core';
 
 declare const bootstrap: any; // used to programmatically hide modal (Bootstrap bundle must be loaded)
 
@@ -63,7 +64,7 @@ declare const bootstrap: any; // used to programmatically hide modal (Bootstrap 
     </div>
   `
 })
-export class CreateBookModalComponent {
+export class CreateBookModalComponent implements AfterViewInit {
   title = '';
   author = '';
   description = '';
@@ -74,7 +75,26 @@ export class CreateBookModalComponent {
 
   @Output() created = new EventEmitter<{ id?: number; title: string; author: string; description?: string }>();
 
-  constructor(private api: ApiService,  private signalR: SignalRService) { }
+  constructor(private api: ApiService, private signalR: SignalRService) { }
+
+  ngAfterViewInit() {
+    const el = document.getElementById('createBookModal');
+    if (!el) return;
+
+    // Listen for any modal hide event (ESC, X, Close button, backdrop)
+    el.addEventListener('hide.bs.modal', () => {
+      // Remove focus to prevent aria-hidden/focus warnings
+      const active = document.activeElement as HTMLElement | null;
+      if (active && el.contains(active)) active.blur();
+
+      // Optional: reset fields
+      this.title = '';
+      this.author = '';
+      this.description = '';
+      this.errorMessage = '';
+      this.successMessage = '';
+    });
+  }
 
   showModal() {
     ModalHelper.showModal('createBookModal');
