@@ -74,14 +74,9 @@ export class CreateBookModalComponent {
 
   @Output() created = new EventEmitter<{ id?: number; title: string; author: string; description?: string }>();
 
-  constructor(private api: ApiService, private signalR: SignalRService) { }
+  constructor(private api: ApiService,  private signalR: SignalRService) { }
 
   showModal() {
-    this.title = '';
-    this.author = '';
-    this.description = '';
-    this.errorMessage = '';
-    this.successMessage = '';
     ModalHelper.showModal('createBookModal');
   }
 
