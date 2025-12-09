@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { NgIf } from '@angular/common';
 import { AuthStateService } from '../../services/auth-state.service';
-import { Router, NavigationEnd  } from '@angular/router';
+import { Router, NavigationEnd } from '@angular/router';
 import { ApiService } from '../../services/api.service';
+import { SignalRService } from '../../services/signalr.service';
 import { filter } from 'rxjs'
 
 @Component({
@@ -54,6 +55,7 @@ export class HeaderComponent {
 
   constructor(
     public auth: AuthStateService,
+    private signalR: SignalRService,
     private router: Router,
     private api: ApiService
   ) { }
@@ -74,13 +76,18 @@ export class HeaderComponent {
   }
 
   logout() {
-    // Call backend logout endpoint
     this.api.logout({}).subscribe({
-      next: () => console.log('Logged out on backend'),
-      error: () => console.warn('Backend logout failed')
+      next: () => {
+        this.auth.clear();          // Clear user state
+        this.signalR.stopConnection();   // Stop any active SignalR connections
+        this.router.navigate(['/auth']); // Redirect to login
+      },
+      error: () => {
+        // Optional: handle errors
+        this.auth.clear();
+        this.router.navigate(['/auth']);
+      }
     });
-
-    this.auth.clear();
-    this.router.navigate(['/auth']);
   }
+
 }
