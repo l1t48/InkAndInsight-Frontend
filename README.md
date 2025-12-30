@@ -1,4 +1,4 @@
-# Book & Quotes Management Frontend 
+# Book & Quotes Management Frontend (This project was previously deployed online. However, due to limitations of the free hosting plan, the database expired, and the deployment was subsequently taken down)
 
 **Note for Testing/Deployment:**
 The backend service is currently hosted on a **free-tier service**. The server will "sleep" after a period of inactivity and requires time to wake up upon the first request. To ensure a smooth testing experience, please access the backend directly at [**https://test-backend-u24f.onrender.com/api/test**] and wait for a response **before** accessing the frontend. Avoid using browser anonymous mode because it won't work with the current cookie management setup.
