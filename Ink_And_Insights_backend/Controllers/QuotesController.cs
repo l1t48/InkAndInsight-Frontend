@@ -1,13 +1,13 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using MyBackend.Models;
-using MyBackend.Dtos;
+using Ink_And_Insights_backend.Models;
+using Ink_And_Insights_backend.Dtos;
 using System.Security.Claims;
-using MyBackend.Data;
+using Ink_And_Insights_backend.Data;
 using Microsoft.AspNetCore.SignalR;
-using MyBackend.Hubs;
-namespace MyBackend.Controllers
+using Ink_And_Insights_backend.Hubs;
+namespace Ink_And_Insights_backend.Controllers
 {
     [Authorize]
     [ApiController]

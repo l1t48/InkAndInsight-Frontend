@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 // Validation attributes ensure basic text validation (lengths and required fields).
 
-namespace MyBackend.Dtos
+namespace Ink_And_Insights_backend.Dtos
 {
     public class BookUpdateDto
     {

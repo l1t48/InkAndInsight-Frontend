@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
 
 
-namespace MyBackend.Helpers
+namespace Ink_And_Insights_backend.Helpers
 {
     [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field | AttributeTargets.Parameter, AllowMultiple = false)]
     public class PasswordComplexityAttribute : ValidationAttribute

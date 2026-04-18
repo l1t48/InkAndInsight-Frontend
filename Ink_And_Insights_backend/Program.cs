@@ -1,9 +1,9 @@
 using Microsoft.EntityFrameworkCore;
-using MyBackend.Config;
-using MyBackend.Services;
-using MyBackend.Hubs;
-using MyBackend.Data;
-using MyBackend.Helpers;
+using Ink_And_Insights_backend.Config;
+using Ink_And_Insights_backend.Services;
+using Ink_And_Insights_backend.Hubs;
+using Ink_And_Insights_backend.Data;
+using Ink_And_Insights_backend.Helpers;
 using Microsoft.AspNetCore.SignalR;
 
 DotNetEnv.Env.Load(); 
@@ -12,7 +12,8 @@ var builder = WebApplication.CreateBuilder(args);
 // ----------------------------
 // DATABASE
 // ----------------------------
-builder.Services.AddDatabase();
+// Pass the configuration and environment to the extension method
+builder.Services.AddDatabase(builder.Configuration, builder.Environment);
 
 // ----------------------------
 // CORS

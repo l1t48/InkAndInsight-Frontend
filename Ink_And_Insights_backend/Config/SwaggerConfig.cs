@@ -1,7 +1,7 @@
 
 using Microsoft.OpenApi.Models;
 
-namespace MyBackend.Config
+namespace Ink_And_Insights_backend.Config
 {
     public static class SwaggerConfig
     {

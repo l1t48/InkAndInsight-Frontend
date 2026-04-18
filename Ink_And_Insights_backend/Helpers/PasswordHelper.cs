@@ -1,7 +1,7 @@
 using System.Security.Cryptography;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 
-namespace MyBackend.Helpers
+namespace Ink_And_Insights_backend.Helpers
 {
     public static class PasswordHelper
     {

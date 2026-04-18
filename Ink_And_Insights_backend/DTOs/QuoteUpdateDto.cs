@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace MyBackend.Dtos
+namespace Ink_And_Insights_backend.Dtos
 {
     public class QuoteUpdateDto
     {

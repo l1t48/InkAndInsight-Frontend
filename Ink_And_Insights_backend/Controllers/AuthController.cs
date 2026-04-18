@@ -1,12 +1,12 @@
 using Microsoft.AspNetCore.Mvc; // Provides attributes and base classes for building controllers and API endpoints
-using MyBackend.Services;
-using MyBackend.Dtos;
+using Ink_And_Insights_backend.Services;
+using Ink_And_Insights_backend.Dtos;
 using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
-using MyBackend.Helpers;
-using MyBackend.Data;
+using Ink_And_Insights_backend.Helpers;
+using Ink_And_Insights_backend.Data;
 
-namespace MyBackend.Controllers
+namespace Ink_And_Insights_backend.Controllers
 {
     // Indicates that this class is an API controller.
     // Enables automatic model validation, binding, and other API-specific behaviors.

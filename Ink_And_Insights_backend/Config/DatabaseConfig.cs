@@ -1,15 +1,24 @@
 using Microsoft.EntityFrameworkCore;
-using MyBackend.Data;
+using Ink_And_Insights_backend.Data;
 
-namespace MyBackend.Config
+namespace Ink_And_Insights_backend.Config
 {
     public static class DatabaseConfig
     {
-        public static void AddDatabase(this IServiceCollection services)
+        public static void AddDatabase(this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment env)
         {
-            var conn = Environment.GetEnvironmentVariable("ConnectionStrings__DefaultConnection") ?? throw new Exception("Connection string not set.");
-            services.AddDbContext<AppDbContext>(opt =>
-                opt.UseNpgsql(conn));
+            if (env.IsDevelopment())
+            {
+                var devConn = Environment.GetEnvironmentVariable("DEV_CONNECTION");
+                services.AddDbContext<AppDbContext>(opt =>
+                    opt.UseSqlite(devConn));
+            }
+            else
+            {
+                var prodConn = Environment.GetEnvironmentVariable("PROD_CONNECTION");
+                services.AddDbContext<AppDbContext>(opt =>
+                    opt.UseNpgsql(prodConn));
+            }
         }
     }
 }

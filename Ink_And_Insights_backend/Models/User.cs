@@ -1,4 +1,4 @@
-namespace MyBackend.Models
+namespace Ink_And_Insights_backend.Models
 {
   public class User {
     public int Id { get; set; }

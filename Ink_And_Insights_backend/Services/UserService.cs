@@ -1,5 +1,5 @@
-using MyBackend.Data;
-using MyBackend.Helpers;
+using Ink_And_Insights_backend.Data;
+using Ink_And_Insights_backend.Helpers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -7,7 +7,7 @@ using System.Security.Claims;
 using System.Text;
 
 
-namespace MyBackend.Services
+namespace Ink_And_Insights_backend.Services
 {
     public class UserService
     {

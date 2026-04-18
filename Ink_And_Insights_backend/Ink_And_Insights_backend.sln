@@ -2,7 +2,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.2.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyBackend", "Test-backend\MyBackend.csproj", "{B525875B-6FCB-4147-567D-61287CCDD30D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ink_And_Insights_backend", "Ink_And_Insights_backend.csproj", "{B525875B-6FCB-4147-567D-61287CCDD30D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

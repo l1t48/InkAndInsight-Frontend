@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
-using MyBackend.Helpers;
-namespace MyBackend.Dtos
+using Ink_And_Insights_backend.Helpers;
+namespace Ink_And_Insights_backend.Dtos
 {
     public class UserRegisterDto
     {

@@ -1,6 +1,6 @@
-using MyBackend.Models;
+using Ink_And_Insights_backend.Models;
 
-namespace MyBackend.Helpers
+namespace Ink_And_Insights_backend.Helpers
 {
     public static class DefaultQuotes
     {

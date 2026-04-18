@@ -16,8 +16,17 @@ out/
 # Visual Studio Code files
 .vscode/
 
-# ASP.NET Core environment files
+# Ignore the environment variables file (Contains secrets!)
 .env
+
+# Ignore the SQLite database file (This is your local data)
+*.db
+*.db-shm
+*.db-wal
+
+# Standard .NET ignores
+bin/
+obj/
 appsettings.*.json
 
 # NuGet packages

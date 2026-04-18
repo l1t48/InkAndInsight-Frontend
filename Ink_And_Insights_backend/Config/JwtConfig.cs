@@ -2,7 +2,7 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 
-namespace MyBackend.Config
+namespace Ink_And_Insights_backend.Config
 {
     public static class JwtConfig
     {
